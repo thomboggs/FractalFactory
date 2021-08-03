@@ -10,19 +10,17 @@ CONFIG += c++11
 
 SOURCES += \
     julia.cpp \
-    julialabel.cpp \
+    juliaworker.cpp \
     main.cpp \
     mainwindow.cpp \
     mandelbrot.cpp \
-    mandelbrotlabel.cpp \
     testWidget.cpp
 
 HEADERS += \
     julia.h \
-    julialabel.h \
+    juliaworker.h \
     mainwindow.h \
     mandelbrot.h \
-    mandelbrotlabel.h \
     testWidget.h
 
 # Default rules for deployment.

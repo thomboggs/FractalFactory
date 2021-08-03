@@ -10,9 +10,9 @@
 #include <QPainter>
 
 
-Mandelbrot::Mandelbrot(QWidget *parent) : QWidget(parent)
+Mandelbrot::Mandelbrot(QWidget *parent) : QLabel(parent)
 {
-    this->resize(400, 400);
+    this->resize(800, 800);
 
     // Initialize the image data on the heap
     this->brotImage = new QImage(width(), height(), QImage::Format_RGB32);
@@ -41,7 +41,6 @@ std::vector<double> Mandelbrot::getMathCoord(int ptX, int ptY)
     double xMath = 4*((double)ptX / width()) - 2;
     double yMath = 4*((double)ptY / height()) - 2;
     std::vector output = {xMath, yMath};
-//    qDebug() << QString::number(output[0]) << QString::number(output[1]);
     return output;
 }
 
@@ -67,11 +66,11 @@ int Mandelbrot::getColorValue(double ptX, double ptY)
 
 std::vector<QPoint> Mandelbrot::calcOrbit(double ptX, double ptY, int maxOrbitLen = 100) {
     //  Do the same calculation as get color value
-     qDebug() << "New Orbit Calculation: ";
+//     qDebug() << "New Orbit Calculation: ";
     std::complex<double> complexPoint(ptX, ptY);
     std::complex<double> complexZ(0, 0);
 
-    qDebug() << "Input Coord: " << QString::number(ptX) << QString::number(ptY);
+//    qDebug() << "Input Coord: " << QString::number(ptX) << QString::number(ptY);
 //    qDebug() << "Initial Complex Point: " << QString::number(complexPoint.real()) << QString::number(complexPoint.imag());
     int maxPoints = maxOrbitLen;
 
@@ -171,8 +170,8 @@ void Mandelbrot::mousePressEvent(QMouseEvent *event) {
     qDebug() << mathCoord[0] << mathCoord[1];
 
     this->orbit = this->calcOrbit(mathCoord[0], mathCoord[1]);
-
     update();
+    emit sendMouseCoord(QPointF(mathCoord[0], mathCoord[1]));
 }
 
 void Mandelbrot::mouseMoveEvent(QMouseEvent *event)
@@ -194,9 +193,8 @@ void Mandelbrot::mouseMoveEvent(QMouseEvent *event)
 //    qDebug() << QString::number(mathCoord[0]) << QString::number(mathCoord[1]);
 
     this->orbit = this->calcOrbit(mathCoord[0], mathCoord[1]);
-
     update();
-
+    emit sendMouseCoord(QPointF(mathCoord[0], mathCoord[1]));
 }
 
 QImage* Mandelbrot::getImage()
@@ -204,4 +202,8 @@ QImage* Mandelbrot::getImage()
     return brotImage;
 }
 
-
+void Mandelbrot::recieveJuliaCoord(QPointF clickCoord)
+{
+    this->orbit = this->calcOrbit(clickCoord.x(), clickCoord.y());
+    update();
+}
