@@ -11,7 +11,7 @@ public:
     int getColorValue(double ptX, double ptY);
     std::vector<double> getMathCoord(int ptX, int ptY);
     QPoint getDispCoord(double ptX, double ptY);
-    std::vector<QPoint> calcOrbit(double ptX, double ptY, int maxOrbitLen);
+    std::vector<QPoint> calcOrbit(double ptX, double ptY);
     void calcMandelbrot();
     QImage* getImage();
 
@@ -23,6 +23,7 @@ protected:
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent* event) override;
     void mouseMoveEvent(QMouseEvent* event) override;
+    void mouseReleaseEvent(QMouseEvent* event) override;
 
 signals:
     void sendMouseCoord(QPointF);
@@ -33,6 +34,7 @@ private:
     QString clickCoord = "0.0, 0.0";
     std::vector<QPoint> orbit;
     QImage* brotImage;
+    int _maxOrbitLen = 100;
 
 };
 

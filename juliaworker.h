@@ -11,9 +11,9 @@ class JuliaWorker : public QObject
 {
     Q_OBJECT
 public:
-    explicit JuliaWorker(QObject *parent = nullptr);
+    explicit JuliaWorker(QWidget *parent = nullptr);
     ~JuliaWorker();
-    void calcImage(QPointF zPoint);
+    void process(QPointF zPoint);
     int calcJulia(QPointF zPoint, QPoint cPoint);
 
 signals:
@@ -22,9 +22,11 @@ signals:
 
 private:
     QImage* juliaImage;
-    int maxIterations = 50;
+    int _brightness = 1;
+    int maxIterations = 100;
     int xsize = 800;
     int ysize = 800;
+    QWidget* _parent{nullptr};
 };
 
 #endif // JULIAWORKER_H
