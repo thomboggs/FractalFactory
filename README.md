@@ -22,6 +22,7 @@ The project is divided into a few classes, MainWindow, Mandelbrot, Julia, JuliaW
 *MainWindow*
 - In the constructor for "MainWindow", the classes objects for Mandelbrot and Julia are created and initialized. 
 - The menu items and layout system are created and initialized. 
+- In the menu, there are popup dialog boxes to provide info, you can save the julia set image to disk, and you can exit the application.
 
 *Mandelbrot*
 - This class contains the functions to generate the mandelbrot fractal and to generate the orbits. 
@@ -49,8 +50,25 @@ The project is divided into a few classes, MainWindow, Mandelbrot, Julia, JuliaW
 - In the destructor, *finished* is emitted. This starts a chain where the worker instance and the thread are both properly deleted. This destructor is only called when the application closes.   
 
 ## Rubric Satisfaction
-
-
+- Readme Section
+  - Readme is included with Build instructions, project description, and rubric points (*this*).
+- Compiling and Testing
+  - The code builds using qmake and Qt Creator
+- Loops, Functions, I/O
+  - Code is organized into functions with multiple control structures. (All Over)
+  - The project reads or writes to an external file. (mainwindow.cpp, line: 115)
+  - The project accepts input from user as part of its operation. (mouse events across both mandelbrot and julia)
+- Object Oriented Programming
+  - The Project **IS** split into classes.
+  - Class constructors utilize member initialization lists (julia.cpp, line 18) (juliaworker.cpp, line 7)
+  - Classes encapsulate behavior
+  - Classes follow an appropriate inheritance hierarchy and Derived class functions override virtual base class functions. Appropriate pure virtual functions are overridden according to Qt best practices. Inheriting QLabel for Julia and Mandelbrot (julia.h line 10 and mandelbrot.h line 6)
+- Memory Management
+  - RAII is used. Beyond the shared pointer to julia image, the structure of the Qt app is RAII. Parent child structure during initialization ensures appropriate deletion.   (julia.cpp line 22)
+  - The project uses smart pointers instead of raw pointers. Qt Widgets must be "raw pointers", but they exist in a parent-child relationship that keeps them scoped. Other pointers are shared. (julia.h, line 36)
+- Concurrency
+  - The project uses multithreading. (julia.cpp, line 60)
+  - A mutex or lock is used in the project. (juliaworker.cpp line 19)
 
 
 ## Future Work:
