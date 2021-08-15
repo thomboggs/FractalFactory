@@ -19,7 +19,7 @@ Julia::Julia(QWidget *parent) : QLabel(parent)
 {
     this->resize(800, 800);
     _mutex.lock();
-    this->_juliaImage = new QImage(800, 800, QImage::Format_RGB32);
+    this->_juliaImage = QSharedPointer<QImage>(new QImage(800, 800, QImage::Format_RGB32));
     _juliaImage->fill(Qt::black);
     _mutex.unlock();
 
@@ -45,13 +45,7 @@ Julia::Julia(QWidget *parent) : QLabel(parent)
     emit this->calcJuliaSet(QPointF(0.0, 0.0));
 }
 
-//void Julia::setImage(QImage* newImage)
-//{
-//    this->_juliaImage = newImage;
-//    update();
-//}
-
-QImage* Julia::getImage()
+QSharedPointer<QImage> Julia::getImage()
 {
     return this->_juliaImage;
 }
@@ -84,14 +78,13 @@ void Julia::recieveBrotCoord(QPointF clickCoord)
 {
     // The fucntion recieves the coordinates clicked in mandelbrot, and renders new Julia Set
     // clickCoord is MathCoord
-    // Calc new julia set fractal and save
 
+    // Calc new julia set fractal
     emit calcJuliaSet(clickCoord);
 }
 
 void Julia::recieveWorkerData()
 {
-//    this->_juliaImage = juliaImage;
     update();
 }
 
@@ -140,6 +133,5 @@ void Julia::mouseReleaseEvent(QMouseEvent *event)
     QPointF mathCoord = this->getMathCoord(xpos, ypos);
 
     // Calc new julia set fractal
-
     emit calcJuliaSet(mathCoord);
 }

@@ -5,10 +5,9 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    qRegisterMetaType<QImage*>(); // This allows a QImage* to be passed into signal/slot
+    QApplication brotApp(argc, argv);
     MainWindow w;
     w.show();
 
-    return a.exec();
+    return brotApp.exec();
 }

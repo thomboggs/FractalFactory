@@ -9,7 +9,9 @@ class MainWindow : public QWidget
 
 public:
     MainWindow();
-    ~MainWindow();
+    void exit();
+    void about();
+    void tips();
 
 signals:
 

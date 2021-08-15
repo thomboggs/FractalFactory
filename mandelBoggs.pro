@@ -13,15 +13,13 @@ SOURCES += \
     juliaworker.cpp \
     main.cpp \
     mainwindow.cpp \
-    mandelbrot.cpp \
-    testWidget.cpp
+    mandelbrot.cpp
 
 HEADERS += \
     julia.h \
     juliaworker.h \
     mainwindow.h \
-    mandelbrot.h \
-    testWidget.h
+    mandelbrot.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

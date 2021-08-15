@@ -43,7 +43,7 @@ QPointF Mandelbrot::getMathCoord(int ptX, int ptY)
     return output;
 }
 
-int Mandelbrot::getColorValue(double ptX, double ptY)
+int Mandelbrot::calcIterations(double ptX, double ptY)
 {
     std::complex<double> complexPoint(4*(ptX / width()) - 2,
                                       4*(ptY / height()) - 2);
@@ -91,16 +91,16 @@ void Mandelbrot::calcMandelbrot()
     QRgb value;
 
     // Calculate Brot
-    int nColorValue = 0;
+    int nIterations = 0;
 
     for (int ptX = 0; ptX < width(); ptX++)
     {
         for (int ptY = 0; ptY < height(); ptY++)
         {
-            nColorValue = getColorValue(static_cast<double>(ptX),
+            nIterations = calcIterations(static_cast<double>(ptX),
                                         static_cast<double>(ptY));
-            if (nColorValue == 0) value = qRgb(0,0,0);
-            else value = qRgb(255, 255-nColorValue, 255-nColorValue);
+            if (nIterations == 0) value = qRgb(0,0,0);
+            else value = qRgb(255, 255-nIterations, 255-nIterations);
             this->_brotImage->setPixel(ptX, ptY, value);
         }
     }
@@ -141,6 +141,7 @@ void Mandelbrot::paintEvent(QPaintEvent*)
         {
             lineColor.setAlpha(255-i*2);
             oPen.setColor(lineColor);
+            oPen.setWidth(1);
             oPainter.setPen(oPen);
             oPainter.drawLine(this->_orbit[i], this->_orbit[i+1]);
         }

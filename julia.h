@@ -6,20 +6,13 @@
 #include <QMutex>
 #include <QMutexLocker>
 
-//#include
-
-
-//QMutex mtx;
 
 class Julia : public QLabel
 {
     Q_OBJECT
 public:
     Julia(QWidget *parent = nullptr);
-//    void calcImage(QPointF zPoint);
-//    int calcJulia(QPointF zPoint, QPoint cPoint);
-//    void setImage(QImage*);
-    QImage* getImage();
+    QSharedPointer<QImage> getImage();
     QPointF getMathCoord(int ptX, int ptY);
     QPoint getDispCoord(double ptX, double ptY);
 
@@ -38,7 +31,7 @@ signals:
     void calcJuliaSet(QPointF);
 
 private:
-    QImage* _juliaImage;
+    QSharedPointer<QImage> _juliaImage;
     QMutex _mutex;
 };
 

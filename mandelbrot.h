@@ -8,7 +8,7 @@ class Mandelbrot : public QLabel
     Q_OBJECT
 public:
     explicit Mandelbrot(QWidget *parent = nullptr);
-    int getColorValue(double ptX, double ptY);
+    int calcIterations(double ptX, double ptY);
     QPointF getMathCoord(int ptX, int ptY);
     QPoint getDispCoord(double ptX, double ptY);
     std::vector<QPoint> calcOrbit(QPointF);
@@ -31,7 +31,6 @@ signals:
 private:
     int _minIterations = 1;
     int _maxIterations = 100;
-//    QString _clickCoord = "0.0, 0.0";
     std::vector<QPoint> _orbit;
     QImage* _brotImage;
     int _maxOrbitLen = 100;
