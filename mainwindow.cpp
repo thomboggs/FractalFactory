@@ -23,7 +23,7 @@ MainWindow::MainWindow()
 
     Mandelbrot* brot = new Mandelbrot(this);
     QImage* brotImage = brot->getImage();
-    Julia* julia = new Julia();
+    Julia* julia = new Julia(this);
     QImage* juliaImage = julia->getImage();
 
     brot->setPixmap(QPixmap::fromImage(*brotImage));
@@ -41,21 +41,21 @@ MainWindow::MainWindow()
     layout->addWidget(juliaLabel, 1, 1);
     this->setLayout(layout);
 
-    // Add Thread For Julia Calculation
-    QThread* thread = new QThread;
-    JuliaWorker* worker = new JuliaWorker(this);
-    worker->moveToThread(thread);
-    connect(julia, &Julia::calcJuliaSet,
-            worker, &JuliaWorker::process);
-    connect(worker, &JuliaWorker::sendImage,
-            julia, &Julia::recieveWorkerData);
-    connect(worker, &JuliaWorker::finished,
-            thread, &QThread::quit);
-    connect(worker, &JuliaWorker::finished,
-            worker, &JuliaWorker::deleteLater);
-    connect(thread, &QThread::finished,
-            thread, &QThread::deleteLater);
-    thread->start();
+//    // Add Thread For Julia Calculation
+//    QThread* thread = new QThread;
+//    JuliaWorker* worker = new JuliaWorker(this);
+//    worker->moveToThread(thread);
+//    connect(julia, &Julia::calcJuliaSet,
+//            worker, &JuliaWorker::process);
+//    connect(worker, &JuliaWorker::sendImage,
+//            julia, &Julia::recieveWorkerData);
+//    connect(worker, &JuliaWorker::finished,
+//            thread, &QThread::quit);
+//    connect(worker, &JuliaWorker::finished,
+//            worker, &JuliaWorker::deleteLater);
+//    connect(thread, &QThread::finished,
+//            thread, &QThread::deleteLater);
+//    thread->start();
 
     connect(brot, &Mandelbrot::sendMouseCoord,
             julia, &Julia::recieveBrotCoord);
@@ -65,4 +65,5 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow()
 {
+
 }

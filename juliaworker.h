@@ -21,11 +21,11 @@ signals:
     void finished();
 
 private:
-    QImage* juliaImage;
+    QImage* _juliaImage;
     int _brightness = 1;
-    int maxIterations = 100;
-    int xsize = 800;
-    int ysize = 800;
+    int _maxIterations = 100;
+    int _xsize = 800;
+    int _ysize = 800;
     QWidget* _parent{nullptr};
 };
 

@@ -8,7 +8,7 @@ class Julia : public QLabel
 {
     Q_OBJECT
 public:
-    Julia();
+    Julia(QWidget *parent = nullptr);
 //    void calcImage(QPointF zPoint);
 //    int calcJulia(QPointF zPoint, QPoint cPoint);
     void setImage(QImage*);
@@ -31,9 +31,9 @@ signals:
     void calcJuliaSet(QPointF);
 
 private:
-    QImage* juliaImage;
+    QImage* _juliaImage;
 //    QPixmap juliaPixmap;
-    int maxIterations = 20;
+//    int _maxIterations = 20;
 };
 
 #endif // JULIA_H

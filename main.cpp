@@ -6,7 +6,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    qRegisterMetaType<QImage*>();
+    qRegisterMetaType<QImage*>(); // This allows a QImage* to be passed into signal/slot
     MainWindow w;
     w.show();
 

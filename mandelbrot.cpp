@@ -16,7 +16,7 @@ Mandelbrot::Mandelbrot(QWidget *parent) : QLabel(parent)
     this->resize(800, 800);
 
     // Initialize the image data on the heap
-    this->brotImage = new QImage(width(), height(), QImage::Format_RGB32);
+    this->_brotImage = new QImage(width(), height(), QImage::Format_RGB32);
 
     this->calcMandelbrot();
 }
@@ -31,17 +31,15 @@ QPoint Mandelbrot::getDispCoord(double ptX, double ptY) {
     int xDisp_int = std::round(xDisp);
     int yDisp_int = std::round(yDisp);
 
-//    qDebug() << "Double Disp: "  << QString::number(xDisp) << QString::number(yDisp);
     QPoint output = QPoint(xDisp_int, yDisp_int);
-//    qDebug() << QString::number(output.x()) << QString::number(output.y());
     return output;
 }
 
-std::vector<double> Mandelbrot::getMathCoord(int ptX, int ptY)
+QPointF Mandelbrot::getMathCoord(int ptX, int ptY)
 {
     double xMath = 4*((double)ptX / width()) - 2;
     double yMath = 4*((double)ptY / height()) - 2;
-    std::vector output = {xMath, yMath};
+    QPointF output = QPointF(xMath, yMath);
     return output;
 }
 
@@ -51,30 +49,26 @@ int Mandelbrot::getColorValue(double ptX, double ptY)
                                       4*(ptY / height()) - 2);
     std::complex<double> complexZ(0, 0);
 
-    int nIterations = 1;
+    int nIterations = _minIterations;
 
-    while ((abs(complexZ) < 2 ) && ( nIterations <= m_nSensitivity ))
+    while ((abs(complexZ) < 2 ) && ( nIterations <= _maxIterations ))
     {
         complexZ = complexZ * complexZ + complexPoint;
         nIterations++;
     }
 
-    if (nIterations < m_nSensitivity)
-        return static_cast<int>(( 255 * nIterations ) / m_nSensitivity );
+    if (nIterations < _maxIterations)
+        return static_cast<int>(( 255 * nIterations ) / _maxIterations );
     else
         return 0;
 }
 
-std::vector<QPoint> Mandelbrot::calcOrbit(double ptX, double ptY) {
+std::vector<QPoint> Mandelbrot::calcOrbit(QPointF coordinate) {
     //  Do the same calculation as get color value
-//     qDebug() << "New Orbit Calculation: ";
-    std::complex<double> complexPoint(ptX, ptY);
+    std::complex<double> complexPoint(coordinate.x(), coordinate.y());
     std::complex<double> complexZ(0, 0);
 
-//    qDebug() << "Input Coord: " << QString::number(ptX) << QString::number(ptY);
-//    qDebug() << "Initial Complex Point: " << QString::number(complexPoint.real()) << QString::number(complexPoint.imag());
-
-    QPoint currentPoint = this->getDispCoord(ptX, ptY);
+    QPoint currentPoint = this->getDispCoord(coordinate.x(), coordinate.y());
     std::vector<QPoint> orbitVec = {currentPoint};
 
     int currentstep = 0;
@@ -82,12 +76,10 @@ std::vector<QPoint> Mandelbrot::calcOrbit(double ptX, double ptY) {
     {
         complexZ = complexZ * complexZ + complexPoint;
         currentPoint = this->getDispCoord(complexZ.real(), complexZ.imag());
-//        qDebug() << "Intermediate ComplexZ: " << QString::number(complexZ.real()) << QString::number(complexZ.imag());
 
         orbitVec.push_back(currentPoint);
         currentstep++;
     }
-//    qDebug() << "Total Orbit Steps: " << QString::number(currentstep);
     return orbitVec;
 }
 
@@ -109,19 +101,19 @@ void Mandelbrot::calcMandelbrot()
                                         static_cast<double>(ptY));
             if (nColorValue == 0) value = qRgb(0,0,0);
             else value = qRgb(255, 255-nColorValue, 255-nColorValue);
-            this->brotImage->setPixel(ptX, ptY, value);
+            this->_brotImage->setPixel(ptX, ptY, value);
         }
     }
 }
 
 QImage* Mandelbrot::getImage()
 {
-    return brotImage;
+    return this->_brotImage;
 }
 
 void Mandelbrot::recieveJuliaCoord(QPointF clickCoord)
 {
-    this->orbit = this->calcOrbit(clickCoord.x(), clickCoord.y());
+    this->_orbit = this->calcOrbit(clickCoord);
     update();
 }
 
@@ -131,8 +123,8 @@ void Mandelbrot::paintEvent(QPaintEvent*)
     oPainter.setRenderHint(QPainter::Antialiasing);
 
     // Paint The Image
-    oPainter.drawImage(0, 0, *(this->brotImage));
-    int orbitSize = this->orbit.size();
+    oPainter.drawImage(0, 0, *(this->_brotImage));
+    int orbitSize = this->_orbit.size();
     if ( orbitSize > 0 )
     {
         // For each QPoint in the orbit vector, we draw a filled circle.
@@ -150,7 +142,7 @@ void Mandelbrot::paintEvent(QPaintEvent*)
             lineColor.setAlpha(255-i*2);
             oPen.setColor(lineColor);
             oPainter.setPen(oPen);
-            oPainter.drawLine(this->orbit[i], this->orbit[i+1]);
+            oPainter.drawLine(this->_orbit[i], this->_orbit[i+1]);
         }
 
         for (int i = 0; i < (orbitSize); i++)
@@ -166,7 +158,7 @@ void Mandelbrot::paintEvent(QPaintEvent*)
             oBrush.setStyle(Qt::SolidPattern);
             oPainter.setPen(oPen);
             oPainter.setBrush(oBrush);
-            oPainter.drawEllipse(this->orbit[i], circleRadius, circleRadius);
+            oPainter.drawEllipse(this->_orbit[i], circleRadius, circleRadius);
         }
 
 
@@ -182,14 +174,11 @@ void Mandelbrot::mousePressEvent(QMouseEvent *event) {
     const int xpos = clickPos.x();
     const int ypos = clickPos.y();
 
-    std::vector<double> mathCoord = this->getMathCoord(xpos, ypos);
-//    this->mCoord.setText(QString('new Coord'))
-    qDebug() << xpos << ypos;
-    qDebug() << mathCoord[0] << mathCoord[1];
+    QPointF mathCoord = this->getMathCoord(xpos, ypos);
 
-    this->orbit = this->calcOrbit(mathCoord[0], mathCoord[1]);
+    this->_orbit = this->calcOrbit(mathCoord);
     update();
-    emit sendMouseCoord(QPointF(mathCoord[0], mathCoord[1]));
+    emit sendMouseCoord(mathCoord);
 }
 
 void Mandelbrot::mouseMoveEvent(QMouseEvent *event)
@@ -198,21 +187,18 @@ void Mandelbrot::mouseMoveEvent(QMouseEvent *event)
      * is pressed down, unless mouse tracking has been
      * enabled with QWidget::setMouseTracking().
     */
-//    if (this->mouseClicked)
-//    {
 
-//    }
     QPoint movePos = event->pos();
     const int xpos = movePos.x();
     const int ypos = movePos.y();
 
-    std::vector<double> mathCoord = this->getMathCoord(xpos, ypos);
+    QPointF mathCoord = this->getMathCoord(xpos, ypos);
 
-//    qDebug() << QString::number(mathCoord[0]) << QString::number(mathCoord[1]);
 
-    this->orbit = this->calcOrbit(mathCoord[0], mathCoord[1]);
+    this->_orbit = this->calcOrbit(mathCoord);
     update();
-    //    emit sendMouseCoord(QPointF(mathCoord[0], mathCoord[1]));
+    // Julia Calc is too slow to have it update as I move the mouse
+    //    emit sendMouseCoord(mathCoord);
 }
 
 void Mandelbrot::mouseReleaseEvent(QMouseEvent *event)
@@ -221,8 +207,8 @@ void Mandelbrot::mouseReleaseEvent(QMouseEvent *event)
     const int xpos = movePos.x();
     const int ypos = movePos.y();
 
-    std::vector<double> mathCoord = this->getMathCoord(xpos, ypos);
-    emit sendMouseCoord(QPointF(mathCoord[0], mathCoord[1]));
+    QPointF mathCoord = this->getMathCoord(xpos, ypos);
+    emit sendMouseCoord(mathCoord);
 
 }
 
