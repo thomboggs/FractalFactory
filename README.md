@@ -1,30 +1,41 @@
 # Mandelbrot
 Mandelbrot/Julia Set Visualizer
 
-
-## Instructions for running the project
-
-## Overview of your code structure
-
-## Rubric Satisfaction
-
-
-## Current Vision Of Completed Project:
+[Describe the application]
 - Dual Frame app in a single window. 
 - Left side shows Mandelbrot Set, Right side show the julia set at 0,0
 - When you click on a chart, the orbit for the mandelbrot set at that coordinate is calculated and the julia set for that coefficient is displayed on the right. 
 
-## Next Steps:
-- Add concurrency to Julia Calculation
-- update initial coordinates
-- update coordinate calculations
-- Update Memory management according to best practices
-- Update display options. for intelligent coloring, brightness etc.
-- Add description in the menu
+## Instructions to Build the Project
+### Using Qt Creator and QMake
+1. Download QT open-source from https://www.qt.io/download-open-source (Scroll to the bottom to "Download the Qt Online Installer". May need to create an Account)
+2. Download the Mandelbrot project to your computer. 
+3. Open the \*.pro file in Qt Creator
+4. Build the project
+
+## Overview of your code structure
+The project is divided into a few classes, MainWindow, Mandelbrot, Julia, JuliaWorker.
+
+*main.cpp*
+Main is used only to start the application and initialize the window from "MainWindow".
+
+*MainWindow*
+In the constructor for "MainWindow", the classes objects for Mandelbrot and Julia are created and initialized. The The menu items and layout system are created and initialized. 
+
+*Mandelbrot*
+
+
+## Rubric Satisfaction
+
+
+
+
+## Future Work:
+- Add more threads to the Julia Calculation to speed it up (I have already added the MUtex functionality to make it thread safe)
+- Update window coordinate system to allow for window resizing.
+- Add user coloring options
 - For Julia Calc, have a multistep render process for quick view and also detailed view (If concurrency not fast enough)
-- Check Rubric to ensure that this meets specs. 
-- Submit for Review
-- Add Zoom feature to both
+- Add zoom feature or user selectable scale and center
 - add saving of output images
 
 ## Resources Used in helpiong me with this Project:
