@@ -10,7 +10,7 @@ JuliaWorker::JuliaWorker(QSharedPointer<QImage> juliaImage, QMutex& mtx) : _juli
 
 JuliaWorker::~JuliaWorker()
 {
-    emit finished();
+//    emit finished();
 }
 
 void JuliaWorker::process(QPointF zPoint)
@@ -35,6 +35,7 @@ void JuliaWorker::process(QPointF zPoint)
         }
     }
     emit calcComplete();
+    emit finished();
 }
 
 int JuliaWorker::calcJulia(QPointF zPoint, QPoint cPoint)

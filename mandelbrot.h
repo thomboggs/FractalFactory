@@ -13,7 +13,7 @@ public:
     QPoint getDispCoord(double ptX, double ptY);
     std::vector<QPoint> calcOrbit(QPointF);
     void calcMandelbrot();
-    QImage* getImage();
+    QSharedPointer<QImage> getImage();
 
 public slots:
     void recieveJuliaCoord(QPointF);
@@ -32,7 +32,7 @@ private:
     int _minIterations = 1;
     int _maxIterations = 100;
     std::vector<QPoint> _orbit;
-    QImage* _brotImage;
+    QSharedPointer<QImage> _brotImage;
     int _maxOrbitLen = 100;
 
 };

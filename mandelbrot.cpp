@@ -16,7 +16,7 @@ Mandelbrot::Mandelbrot(QWidget *parent) : QLabel(parent)
     this->resize(800, 800);
 
     // Initialize the image data on the heap
-    this->_brotImage = new QImage(width(), height(), QImage::Format_RGB32);
+    this->_brotImage = QSharedPointer<QImage>(new QImage(width(), height(), QImage::Format_RGB32));
 
     this->calcMandelbrot();
 }
@@ -106,7 +106,7 @@ void Mandelbrot::calcMandelbrot()
     }
 }
 
-QImage* Mandelbrot::getImage()
+QSharedPointer<QImage> Mandelbrot::getImage()
 {
     return this->_brotImage;
 }

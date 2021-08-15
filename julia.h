@@ -12,9 +12,11 @@ class Julia : public QLabel
     Q_OBJECT
 public:
     Julia(QWidget *parent = nullptr);
+
     QSharedPointer<QImage> getImage();
     QPointF getMathCoord(int ptX, int ptY);
     QPoint getDispCoord(double ptX, double ptY);
+    void calcJulia(QPointF);
 
 public slots:
     void recieveBrotCoord(QPointF);

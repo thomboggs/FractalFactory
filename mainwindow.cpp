@@ -15,6 +15,7 @@
 #include <QCoreApplication>
 #include <QMessageBox>
 #include <string>
+#include <QFileDialog>
 
 
 MainWindow::MainWindow()
@@ -23,13 +24,13 @@ MainWindow::MainWindow()
 
     // initialize fractal widgets
     Mandelbrot* brot = new Mandelbrot(this);
-    QImage* brotImage = brot->getImage();
-    Julia* julia = new Julia(this);
-    QSharedPointer<QImage> juliaImage = julia->getImage();
+    QSharedPointer<QImage> brotImage = brot->getImage();
+    _julia = new Julia(this);
+    QSharedPointer<QImage> juliaImage = _julia->getImage();
 
     // set initial pixmap to define space
     brot->setPixmap(QPixmap::fromImage(*brotImage));
-    julia->setPixmap(QPixmap::fromImage(*juliaImage));
+    _julia->setPixmap(QPixmap::fromImage(*juliaImage));
 
     // Create Layout with labels for each side
     QLabel *mandelbrotLabel = new QLabel(tr("Mandelbrot Set with Orbits"), this);
@@ -42,29 +43,33 @@ MainWindow::MainWindow()
     QAction* quit = new QAction("&Quit", menubar);
     QAction* about = new QAction("&About", menubar);
     QAction* tips = new QAction("&Tips", menubar);
+    QAction* save = new QAction("&Save Julia Set Image", menubar);
+
     QMenu* file_menu = menubar->addMenu("Menu");
 
     // Set File Menu Order (top to bottom)
     file_menu->addAction(about);
     file_menu->addAction(tips);
+    file_menu->addAction(save);
     file_menu->addAction(quit);
 
     // Define file menu actions
     connect(quit, &QAction::triggered, this, &MainWindow::exit);
     connect(about, &QAction::triggered, this, &MainWindow::about);
     connect(tips, &QAction::triggered, this, &MainWindow::tips);
+    connect(save, &QAction::triggered, this, &MainWindow::saveJulia);
 
     // Place Plots and labels into grid
     QGridLayout* layout = new QGridLayout(this);
     layout->addWidget(brot, 0, 0);
-    layout->addWidget(julia, 0, 1);
+    layout->addWidget(_julia, 0, 1);
     layout->addWidget(mandelbrotLabel, 1, 0);
     layout->addWidget(juliaLabel, 1, 1);
     this->setLayout(layout);
 
     connect(brot, &Mandelbrot::sendMouseCoord,
-            julia, &Julia::recieveBrotCoord);
-    connect(julia, &Julia::sendMouseCoord,
+            _julia, &Julia::recieveBrotCoord);
+    connect(_julia, &Julia::sendMouseCoord,
             brot, &Mandelbrot::recieveJuliaCoord);
 }
 
@@ -97,5 +102,19 @@ void MainWindow::tips()
            + QString("4: Notice the correlation between orbits and the shape of the julia set. ")
            + QString("For instance, the rotation of the arms of the julia set matches the rotation of the orbit.");
    mBox.about(this, about_title, about_text);
+}
+
+void MainWindow::saveJulia()
+{
+    QString imageFileName = QFileDialog::getSaveFileName(this, tr("Save Julia Set Image File"), QString(), tr("Images (*.png)"));
+    QSharedPointer<QImage> saveImage;
+
+    if (!imageFileName.isEmpty())
+    {
+        saveImage = _julia->getImage();
+        saveImage->save(imageFileName);
+    }
+
+
 }
 

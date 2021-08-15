@@ -20,29 +20,10 @@ Julia::Julia(QWidget *parent) : QLabel(parent)
     this->resize(800, 800);
     _mutex.lock();
     this->_juliaImage = QSharedPointer<QImage>(new QImage(800, 800, QImage::Format_RGB32));
-    _juliaImage->fill(Qt::black);
     _mutex.unlock();
 
-    // Add Thread For Julia Calculation
-    QThread* thread = new QThread;
-    JuliaWorker* worker = new JuliaWorker(this->_juliaImage, _mutex);
-    worker->moveToThread(thread);
-    connect(this, &Julia::calcJuliaSet,
-            worker, &JuliaWorker::process);
-    connect(worker, &JuliaWorker::calcComplete,
-            this, &Julia::recieveWorkerData);
-    connect(worker, &JuliaWorker::finished,
-            thread, &QThread::quit);
-    connect(worker, &JuliaWorker::finished,
-            worker, &JuliaWorker::deleteLater);
-    connect(thread, &QThread::finished,
-            thread, &QThread::deleteLater);
-    thread->start();
-
-    update();
-
-    // Create initial Julia Set at (0,0)
-    emit this->calcJuliaSet(QPointF(0.0, 0.0));
+    // Show initial Julia
+    this->calcJulia(QPointF(0.0, 0.0));
 }
 
 QSharedPointer<QImage> Julia::getImage()
@@ -73,6 +54,30 @@ QPoint Julia::getDispCoord(double ptX, double ptY) {
     return output;
 }
 
+void Julia::calcJulia(QPointF clickCoord)
+{
+    // Add Thread For Julia Calculation
+    QThread* thread = new QThread;
+    JuliaWorker* worker = new JuliaWorker(this->_juliaImage, _mutex);
+    worker->moveToThread(thread);
+    connect(this, &Julia::calcJuliaSet,
+            worker, &JuliaWorker::process);
+    connect(worker, &JuliaWorker::calcComplete,
+            this, &Julia::recieveWorkerData);
+
+    connect(worker, &JuliaWorker::finished,
+            thread, &QThread::quit);
+    // This will delete itself
+    connect(worker, &JuliaWorker::finished,
+            worker, &JuliaWorker::deleteLater);
+    connect(thread, &QThread::finished,
+            thread, &QThread::deleteLater);
+    thread->start();
+
+    // Create initial Julia Set at (0,0)
+    emit this->calcJuliaSet(clickCoord);
+}
+
 // Slots
 void Julia::recieveBrotCoord(QPointF clickCoord)
 {
@@ -80,7 +85,8 @@ void Julia::recieveBrotCoord(QPointF clickCoord)
     // clickCoord is MathCoord
 
     // Calc new julia set fractal
-    emit calcJuliaSet(clickCoord);
+//    emit calcJuliaSet(clickCoord);
+    this->calcJulia(clickCoord);
 }
 
 void Julia::recieveWorkerData()
@@ -108,8 +114,9 @@ void Julia::mousePressEvent(QMouseEvent *event)
     QPointF mathCoord = this->getMathCoord(xpos, ypos);
 
     // Calc new julia set fractal and save
-    emit calcJuliaSet(mathCoord);
+//    emit calcJuliaSet(mathCoord);
     emit sendMouseCoord(mathCoord);
+    this->calcJulia(mathCoord);
 }
 
 void Julia::mouseMoveEvent(QMouseEvent *event)
@@ -133,5 +140,6 @@ void Julia::mouseReleaseEvent(QMouseEvent *event)
     QPointF mathCoord = this->getMathCoord(xpos, ypos);
 
     // Calc new julia set fractal
-    emit calcJuliaSet(mathCoord);
+//    emit calcJuliaSet(mathCoord);
+    this->calcJulia(mathCoord);
 }
