@@ -4,15 +4,16 @@
 #include <QLabel>
 
 
-JuliaWorker::JuliaWorker(QWidget *parent) : QObject(parent)
+JuliaWorker::JuliaWorker(QImage* juliaImage, QMutex& mtx) : _juliaImage(juliaImage) , _mutex(mtx)
 {
     // todo: need to make this scoped (RAII)
-    this->_juliaImage = new QImage(_xsize, _ysize, QImage::Format_RGB32);
+//    this->_juliaImage = new QImage(_xsize, _ysize, QImage::Format_RGB32);
 //    this->_parent = parent;
 }
 
 JuliaWorker::~JuliaWorker()
 {
+//    delete _juliaImage;
     emit finished();
 }
 
@@ -20,9 +21,9 @@ void JuliaWorker::process(QPointF zPoint)
 {
     // This Thread calculates the Updated Filled Julia Set Image
 //    qDebug() << tr("JuliaWorker") << this->_parent << this << zPoint.x() << zPoint.y();
-
+    QMutexLocker locker(&_mutex);
     QRgb value;
-
+//    _mutex.lock();
     // Calculate Julia
     int pixelColorValue = 0;
 
@@ -42,11 +43,12 @@ void JuliaWorker::process(QPointF zPoint)
 //            qDebug() << tr("JuliaWorker: ") << tr("Post Set-Pixel");
         }
     }
+//    _mutex.unlock();
 //    qDebug() << tr("JuliaWorker: ") << tr("Post Calc");
-    QImage* test = new QImage(*(this->_juliaImage));
+//    QImage* test = new QImage(*(this->_juliaImage));
 //    qDebug() << tr("JuliaWorker: ") << tr("Post test image");
     // Move the image to the parent object
-    emit sendImage(test);
+    emit calcComplete();
 //    qDebug() << tr("JuliaWorker: ") << tr("Post Emit");
 }
 

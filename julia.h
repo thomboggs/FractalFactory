@@ -3,6 +3,13 @@
 
 #include <QLabel>
 #include <QSharedPointer>
+#include <QMutex>
+#include <QMutexLocker>
+
+//#include
+
+
+//QMutex mtx;
 
 class Julia : public QLabel
 {
@@ -11,14 +18,14 @@ public:
     Julia(QWidget *parent = nullptr);
 //    void calcImage(QPointF zPoint);
 //    int calcJulia(QPointF zPoint, QPoint cPoint);
-    void setImage(QImage*);
+//    void setImage(QImage*);
     QImage* getImage();
-    std::vector<double> getMathCoord(int ptX, int ptY);
+    QPointF getMathCoord(int ptX, int ptY);
     QPoint getDispCoord(double ptX, double ptY);
 
 public slots:
     void recieveBrotCoord(QPointF);
-    void recieveWorkerData(QImage*);
+    void recieveWorkerData();
 
 protected:
     void paintEvent(QPaintEvent*) override;
@@ -32,8 +39,7 @@ signals:
 
 private:
     QImage* _juliaImage;
-//    QPixmap juliaPixmap;
-//    int _maxIterations = 20;
+    QMutex _mutex;
 };
 
 #endif // JULIA_H

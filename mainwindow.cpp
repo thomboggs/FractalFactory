@@ -1,19 +1,18 @@
 #include "mainwindow.h"
 #include "mandelbrot.h"
 #include "julia.h"
-#include "testWidget.h"
 #include "juliaworker.h"
 
 #include <QLabel>
-#include <QMouseEvent>
-#include <QDebug>
-#include <vector>
-#include <QPixmap>
+//#include <QMouseEvent>
+//#include <QDebug>
+//#include <vector>
+//#include <QPixmap>
 #include <QImage>
 #include <QGridLayout>
 #include <QLayout>
 #include <QGroupBox>
-#include <QThread>
+//#include <QThread>
 
 
 MainWindow::MainWindow()
@@ -29,9 +28,9 @@ MainWindow::MainWindow()
     brot->setPixmap(QPixmap::fromImage(*brotImage));
     julia->setPixmap(QPixmap::fromImage(*juliaImage));
 
-    QLabel *mandelbrotLabel = new QLabel(tr("Mandelbrot Set with Orbits"));
+    QLabel *mandelbrotLabel = new QLabel(tr("Mandelbrot Set with Orbits"), this);
     mandelbrotLabel->setAlignment(Qt::AlignHCenter);
-    QLabel *juliaLabel = new QLabel(tr("Julia Sets"));
+    QLabel *juliaLabel = new QLabel(tr("Julia Sets"), this);
     juliaLabel->setAlignment(Qt::AlignHCenter);
 
     QGridLayout *layout = new QGridLayout(this);
@@ -41,22 +40,6 @@ MainWindow::MainWindow()
     layout->addWidget(juliaLabel, 1, 1);
     this->setLayout(layout);
 
-//    // Add Thread For Julia Calculation
-//    QThread* thread = new QThread;
-//    JuliaWorker* worker = new JuliaWorker(this);
-//    worker->moveToThread(thread);
-//    connect(julia, &Julia::calcJuliaSet,
-//            worker, &JuliaWorker::process);
-//    connect(worker, &JuliaWorker::sendImage,
-//            julia, &Julia::recieveWorkerData);
-//    connect(worker, &JuliaWorker::finished,
-//            thread, &QThread::quit);
-//    connect(worker, &JuliaWorker::finished,
-//            worker, &JuliaWorker::deleteLater);
-//    connect(thread, &QThread::finished,
-//            thread, &QThread::deleteLater);
-//    thread->start();
-
     connect(brot, &Mandelbrot::sendMouseCoord,
             julia, &Julia::recieveBrotCoord);
     connect(julia, &Julia::sendMouseCoord,
@@ -65,5 +48,7 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow()
 {
-
+    // When a QObject is deleted, all of its children are automatically deleted.
+    // .. All objects created in the mainWindow constructor are children, and
+    // .. automatically deleted.
 }

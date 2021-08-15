@@ -4,29 +4,30 @@
 #include <QObject>
 #include <QPointF>
 #include <QImage>
-#include <memory>
-#include <QPixmap>
+#include <QMutex>
+#include <QMutexLocker>
 
 class JuliaWorker : public QObject
 {
     Q_OBJECT
 public:
-    explicit JuliaWorker(QWidget *parent = nullptr);
+    explicit JuliaWorker(QImage* juliaImage, QMutex& mtx);
     ~JuliaWorker();
     void process(QPointF zPoint);
     int calcJulia(QPointF zPoint, QPoint cPoint);
 
 signals:
-    void sendImage(QImage*);
+    void calcComplete();
     void finished();
 
 private:
     QImage* _juliaImage;
+    QMutex& _mutex;
     int _brightness = 1;
     int _maxIterations = 100;
     int _xsize = 800;
     int _ysize = 800;
-    QWidget* _parent{nullptr};
+//    QWidget* _parent{nullptr};
 };
 
 #endif // JULIAWORKER_H

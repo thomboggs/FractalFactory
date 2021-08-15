@@ -12,10 +12,9 @@ public:
     ~MainWindow();
 
 signals:
-//    void startProgram();
 
 protected:
-//    void mousePressEvent(QMouseEvent* event) override;
+
 private:
 
 };

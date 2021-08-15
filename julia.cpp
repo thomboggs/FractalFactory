@@ -5,8 +5,6 @@
 #include <QSlider>
 #include <QMouseEvent>
 #include <QDebug>
-#include <vector>
-#include <QPixmap>
 #include <QImage>
 #include <QPointF>
 #include <QPoint>
@@ -20,15 +18,18 @@
 Julia::Julia(QWidget *parent) : QLabel(parent)
 {
     this->resize(800, 800);
-    this->_juliaImage = new QImage(width(), height(), QImage::Format_RGB32);
+    _mutex.lock();
+    this->_juliaImage = new QImage(800, 800, QImage::Format_RGB32);
+    _juliaImage->fill(Qt::black);
+    _mutex.unlock();
 
     // Add Thread For Julia Calculation
     QThread* thread = new QThread;
-    JuliaWorker* worker = new JuliaWorker();
+    JuliaWorker* worker = new JuliaWorker(this->_juliaImage, _mutex);
     worker->moveToThread(thread);
     connect(this, &Julia::calcJuliaSet,
             worker, &JuliaWorker::process);
-    connect(worker, &JuliaWorker::sendImage,
+    connect(worker, &JuliaWorker::calcComplete,
             this, &Julia::recieveWorkerData);
     connect(worker, &JuliaWorker::finished,
             thread, &QThread::quit);
@@ -38,27 +39,28 @@ Julia::Julia(QWidget *parent) : QLabel(parent)
             thread, &QThread::deleteLater);
     thread->start();
 
+    update();
+
     // Create initial Julia Set at (0,0)
     emit this->calcJuliaSet(QPointF(0.0, 0.0));
-
 }
 
-void Julia::setImage(QImage* newImage)
-{
-    this->_juliaImage = newImage;
-    update();
-}
+//void Julia::setImage(QImage* newImage)
+//{
+//    this->_juliaImage = newImage;
+//    update();
+//}
 
 QImage* Julia::getImage()
 {
     return this->_juliaImage;
 }
 
-std::vector<double> Julia::getMathCoord(int ptX, int ptY)
+QPointF Julia::getMathCoord(int ptX, int ptY)
 {
     double xMath = 4*((double)ptX / width()) - 2;
     double yMath = 4*((double)ptY / height()) - 2;
-    std::vector output = {xMath, yMath};
+    QPointF output = QPointF(xMath, yMath);
     return output;
 }
 
@@ -87,19 +89,21 @@ void Julia::recieveBrotCoord(QPointF clickCoord)
     emit calcJuliaSet(clickCoord);
 }
 
-void Julia::recieveWorkerData(QImage* juliaImage)
+void Julia::recieveWorkerData()
 {
-    this->_juliaImage = juliaImage;
+//    this->_juliaImage = juliaImage;
     update();
 }
 
 // Protected
 void Julia::paintEvent(QPaintEvent *)
 {
+//    QMutexLocker locker(&_mutex);
     QPainter oPainter(this);
     oPainter.setRenderHint(QPainter::Antialiasing);
 
     oPainter.drawImage(0, 0, *(this->_juliaImage));
+
 }
 
 void Julia::mousePressEvent(QMouseEvent *event)
@@ -108,13 +112,11 @@ void Julia::mousePressEvent(QMouseEvent *event)
     const int xpos = clickPos.x();
     const int ypos = clickPos.y();
 
-    std::vector<double> mathCoord = this->getMathCoord(xpos, ypos);
-    qDebug() << xpos << ypos;
-    qDebug() << mathCoord[0] << mathCoord[1];
+    QPointF mathCoord = this->getMathCoord(xpos, ypos);
 
     // Calc new julia set fractal and save
-    emit calcJuliaSet(QPointF(mathCoord[0], mathCoord[1]));
-    emit sendMouseCoord(QPointF(mathCoord[0], mathCoord[1]));
+    emit calcJuliaSet(mathCoord);
+    emit sendMouseCoord(mathCoord);
 }
 
 void Julia::mouseMoveEvent(QMouseEvent *event)
@@ -123,10 +125,10 @@ void Julia::mouseMoveEvent(QMouseEvent *event)
     const int xpos = movePos.x();
     const int ypos = movePos.y();
 
-    std::vector<double> mathCoord = this->getMathCoord(xpos, ypos);
+    QPointF mathCoord = this->getMathCoord(xpos, ypos);
 
     // Calc new julia set fractal
-    emit sendMouseCoord(QPointF(mathCoord[0], mathCoord[1]));
+    emit sendMouseCoord(mathCoord);
 }
 
 void Julia::mouseReleaseEvent(QMouseEvent *event)
@@ -135,9 +137,9 @@ void Julia::mouseReleaseEvent(QMouseEvent *event)
     const int xpos = movePos.x();
     const int ypos = movePos.y();
 
-    std::vector<double> mathCoord = this->getMathCoord(xpos, ypos);
+    QPointF mathCoord = this->getMathCoord(xpos, ypos);
 
     // Calc new julia set fractal
 
-    emit calcJuliaSet(QPointF(mathCoord[0], mathCoord[1]));
+    emit calcJuliaSet(mathCoord);
 }
