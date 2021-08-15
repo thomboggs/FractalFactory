@@ -15,7 +15,7 @@ For more info, see the following interesting youtube video: https://www.youtube.
 
 ## Instructions to Build the Project
 ### Using Qt Creator and QMake
-1. Download QT open-source from https://www.qt.io/download-open-source (Scroll to the bottom to "Download the Qt Online Installer". May need to create an Account)
+1. Download Qt open-source (all libraries and Qt Creator) from https://www.qt.io/download-open-source (Scroll to the bottom to "Download the Qt Online Installer". May need to create an Account)
 2. Download the Mandelbrot project to your computer. 
 3. Open the \*.pro file in Qt Creator
 4. Build the project
