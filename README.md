@@ -1,10 +1,17 @@
 # Mandelbrot
 Mandelbrot/Julia Set Visualizer
 
-[Describe the application]
-- Dual Frame app in a single window. 
-- Left side shows Mandelbrot Set, Right side show the julia set at 0,0
-- When you click on a chart, the orbit for the mandelbrot set at that coordinate is calculated and the julia set for that coefficient is displayed on the right. 
+This program visualizes Mandelbrot Fractal Orbits and Julia Set Fractals for the coordinates clicked by the user. In Addition, the user can save the Julia Set Fractal to their local disk.
+
+- "What is a Mandelbrot set and Julia set?"
+  - From Wikipedia: The Mandelbrot set is the set of complex numbers, c, for which the function f_{c}(z)=z^{2}+c does not diverge when iterated from z=0, i.e., for which the sequence f_{c}(0), f_{c}(f_{c}(0)), etc... remains bounded in absolute value. https://en.wikipedia.org/wiki/Mandelbrot_set
+
+  - The Julia Set is the same function, but z doesn't necessarily start at 0. 
+
+- "What is an Orbit?"
+  - The orbit refers the to sequence of coordinates that are calculated as the function f_{c}(z)=z^{2}+c is applied to itself over and over again. 
+
+For more info, see the following interesting youtube video: https://www.youtube.com/watch?v=FFftmWSzgmk
 
 ## Instructions to Build the Project
 ### Using Qt Creator and QMake
