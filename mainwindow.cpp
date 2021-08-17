@@ -44,6 +44,7 @@ MainWindow::MainWindow()
     QAction* about = new QAction("&About", menubar);
     QAction* tips = new QAction("&Tips", menubar);
     QAction* save = new QAction("&Save Julia Set Image", menubar);
+    this->_mBox = new QMessageBox(this);
 
     QMenu* file_menu = menubar->addMenu("Menu");
 
@@ -80,7 +81,7 @@ void MainWindow::exit()
 
 void MainWindow::about()
 {
-    QMessageBox mBox = QMessageBox();
+//     QMessageBox mBox = QMessageBox();
     const QString about_title = "Info About Mandelbrot/Julia-Set Visualizer";
     const QString about_text =
             QString("Click on either the left or right plot to see the \n")
@@ -88,12 +89,12 @@ void MainWindow::about()
             + QString("\n\n")
             + QString("For more information, see:\n")
             + QString("https://github.com/thomboggs/Mandelbrot/tree/main#readme");
-    mBox.about(this, about_title, about_text);
+    this->_mBox->about(this, about_title, about_text);
 }
 
 void MainWindow::tips()
 {
-   QMessageBox mBox = QMessageBox();
+//    QMessageBox mBox = QMessageBox();
    const QString about_title = "Helpful Tips";
    const QString about_text =
            QString("1: You can move the application window, but do not resize the window.\n")
@@ -101,7 +102,7 @@ void MainWindow::tips()
            + QString("3: The Julia Set Fractal is updated when you press the mouse button, and when you release the mouse button.\n")
            + QString("4: Notice the correlation between orbits and the shape of the julia set. ")
            + QString("For instance, the rotation of the arms of the julia set matches the rotation of the orbit.");
-   mBox.about(this, about_title, about_text);
+   this->_mBox->about(this, about_title, about_text);
 }
 
 void MainWindow::saveJulia()
