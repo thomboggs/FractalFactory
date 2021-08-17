@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <QSharedPointer>
 #include <memory>
+#include <QMessageBox>
 
 class MainWindow : public QWidget
 {
@@ -23,6 +24,8 @@ protected:
 
 private:
     Julia* _julia;
+    QMessageBox* _mBox;
+    
 
 };
 #endif // MAINWINDOW_H
