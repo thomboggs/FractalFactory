@@ -13,6 +13,15 @@ This program visualizes Mandelbrot Fractal Orbits and Julia Set Fractals for the
 
 For more info, see the following interesting youtube video: https://www.youtube.com/watch?v=FFftmWSzgmk
 
+## Future Work:
+- Add more threads to the Julia Calculation to speed it up (I have already added the MUtex functionality to make it thread safe)
+  - Thread architecture may have to be changed.   
+- Fix Menu Button
+- Update window coordinate system to allow for window resizing.
+- Add user coloring options
+- For Julia Calc, have a multistep render process for quick view and also detailed view (If concurrency not fast enough)
+- Add zoom feature or user selectable scale and center
+
 ## Instructions to Build the Project
 ### Using Qt Creator and QMake
 1. Download Qt open-source (all libraries and Qt Creator) from https://www.qt.io/download-open-source (Scroll to the bottom to "Download the Qt Online Installer". May need to create an Account)
@@ -77,14 +86,6 @@ The project is divided into a few classes, MainWindow, Mandelbrot, Julia, JuliaW
   - The project uses multithreading. (julia.cpp, line 60)
   - A mutex or lock is used in the project. (juliaworker.cpp line 19)
 
-
-## Future Work:
-- Add more threads to the Julia Calculation to speed it up (I have already added the MUtex functionality to make it thread safe)
-- Update window coordinate system to allow for window resizing.
-- Add user coloring options
-- For Julia Calc, have a multistep render process for quick view and also detailed view (If concurrency not fast enough)
-- Add zoom feature or user selectable scale and center
-- add saving of output images
 
 ## Resources Used in helpiong me with this Project:
 - numberphile Youtube video of Orbits (todo: add link)
