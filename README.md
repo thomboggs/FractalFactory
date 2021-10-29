@@ -1,6 +1,10 @@
 # Mandelbrot
 Mandelbrot/Julia Set Visualizer
 
+GIF of the FractalFactory in action:
+![FractalFactory](https://user-images.githubusercontent.com/10662781/139357005-e106f5d5-f265-4c6c-836a-7efd3fec1e0e.gif)
+
+
 This program visualizes Mandelbrot Fractal Orbits and Julia Set Fractals for the coordinates clicked by the user. In Addition, the user can save the Julia Set Fractal to their local disk.
 
 - "What is a Mandelbrot set and Julia set?"
