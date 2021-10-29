@@ -1,7 +1,7 @@
 # Mandelbrot
 Mandelbrot/Julia Set Visualizer
 
-GIF of the FractalFactory in action:
+GIF of the FractalFactory in action:<br>
 ![FractalFactory](https://user-images.githubusercontent.com/10662781/139357005-e106f5d5-f265-4c6c-836a-7efd3fec1e0e.gif)
 
 
